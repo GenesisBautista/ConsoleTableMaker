@@ -10,8 +10,7 @@ namespace Examples
         {
             Example1();
             Example2();
-
-            Console.WriteLine("test".Pastel(Color.Blue) + " newTest".Pastel(Color.Green));
+            Example3();
         }
 
         static private void Example1()
@@ -63,10 +62,21 @@ namespace Examples
                 "Amount"
             });
 
-            table[1].ChangeColorAt(1, Color.Red);
-            table[2].ChangeColorAt(1, Color.Green);
+            table[1].SetCellColorAt(1, Color.Red);
+            table[2].SetCellColorAt(1, Color.Green);
 
             table.IntelligibleRows = false;
+
+            table.DrawGrid();
+        }
+
+        static void Example3()
+        {
+            Table table = new Table();
+
+            table.AddHeaders(new Row { 
+                "Test"
+            });
 
             table.DrawGrid();
         }

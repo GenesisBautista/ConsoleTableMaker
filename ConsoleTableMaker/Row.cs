@@ -32,11 +32,14 @@ namespace ConsoleTableMaker
             return cellProperties[index].Color;
         }
 
-        public void ChangeColorAt(int index, Color color)
+        public void SetCellColorAt(int index, Color color)
         {
             cellProperties[index].Color = color;
         }
 
-
+        public string GetFormattingAt(int index)
+        {
+            return cellProperties[index].FormatString;
+        }
     }
 }

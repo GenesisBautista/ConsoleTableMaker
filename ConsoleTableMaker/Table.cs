@@ -36,24 +36,15 @@ namespace ConsoleTableMaker
         // added validation to existing base.add as well as keeping track of the column length for each column
         public new void Add(Row row)
         {
-            ValidateColumnCount(row);
+            NecessaryOnRowAdd(row);
             base.Add(row);
             row.IsAttached = true;
-            SetColumnLengths(row);
-            if(ColumnAlignment.Count == 0)
-            {
-                foreach(string s in row)
-                {
-                    ColumnAlignment.Add(Align.Left);
-                }
-
-            }
         }
 
         // This adds a header row if none exists and replaces header row if one already exists
         public void AddHeaders(Row row)
         {
-            ValidateColumnCount(row);
+            NecessaryOnRowAdd(row);
             if (HasHeaders == false)
             {
                 Insert(0, row);
@@ -63,7 +54,6 @@ namespace ConsoleTableMaker
             {
                 base[0] = row;
             }
-            SetColumnLengths(row);
         }
 
         public void AlignColumnAt(int columnIndex, Align alignment)
@@ -82,29 +72,6 @@ namespace ConsoleTableMaker
         public void DrawGrid()
         {
             Console.Write(ToString());
-            //DrawBorder(BorderType.Top);
-
-            //for (int rowIndex = 0; rowIndex < base.Count; rowIndex++)
-            //{
-            //    Console.Write("│".Pastel(BorderColor));
-            //    foreach (var cell in base[rowIndex].Select((data, columnIndex) => (data, columnIndex)))
-            //    {
-            //        string output = CellBuilder(cell.columnIndex);
-
-            //        Console.Write(output.Pastel(GetCellColor(rowIndex, cell.columnIndex)),
-            //            cell.data
-            //        );
-            //        Console.Write(("│".Pastel(BorderColor)));
-            //    }
-            //    Console.Write("\n");
-
-            //    if ((HasHeaders && rowIndex == 0) || (FullGrid && rowIndex != base.Count -1))
-            //    {
-            //        DrawBorder(BorderType.Middle);
-            //    }
-            //}
-
-            //DrawBorder(BorderType.Bottom);
         }
 
         public new string ToString()
@@ -117,7 +84,7 @@ namespace ConsoleTableMaker
                 table += "│".Pastel(BorderColor);
                 foreach (var cell in base[rowIndex].Select((data, columnIndex) => (data, columnIndex)))
                 {
-                    string output = CellBuilder(cell.columnIndex);
+                    string output = CellBuilder(rowIndex, cell.columnIndex);
 
                     table += string.Format(output, cell.data).Pastel(GetCellColor(rowIndex, cell.columnIndex));
                     table += ("│".Pastel(BorderColor));
@@ -135,6 +102,13 @@ namespace ConsoleTableMaker
         #endregion
 
         #region private methods
+        #region Column Methods
+        private void NecessaryOnRowAdd(Row row)
+        {
+            ValidateColumnCount(row);
+            SetColumnAlignment(row);
+            SetColumnLengths(row);
+        }
         private void ValidateColumnCount(Row row)
         {
             if (ColumnCount == 0)
@@ -146,18 +120,6 @@ namespace ConsoleTableMaker
                 throw new Exception($"New row added at Index {Count - 1} does not match the rest of the grid column size");
             }
         }
-
-        #region Grid Drawing
-        private string CellBuilder(int columnIndex)
-        {
-            return CreatePadding(PaddingLeft) + "{0," + AlignCell(columnIndex) + ColumnLengths[columnIndex] + "}" + CreatePadding(PaddingRight);
-        }
-
-        private string AlignCell(int columnIndex)
-        {
-            return ColumnAlignment[columnIndex] == Align.Left ? "-" : "";
-        }
-
         private void SetColumnLengths(Row row)
         {
             foreach (var s in row.Select((data, columnIndex) => (data, columnIndex)))
@@ -171,6 +133,39 @@ namespace ConsoleTableMaker
                     ColumnLengths[s.columnIndex] = s.data.ToString().Length;
                 }
             }
+        }
+
+        private void SetColumnAlignment(Row row)
+        {
+            if (ColumnAlignment.Count == 0)
+            {
+                foreach (string s in row)
+                {
+                    ColumnAlignment.Add(Align.Left);
+                }
+
+            }
+        }
+        #endregion
+
+        #region Grid Drawing
+        private string CellBuilder(int rowIndex, int columnIndex)
+        {
+            string cell = "";
+            cell += CreatePadding(PaddingLeft);
+            cell += "{0," + AlignCell(columnIndex) + ColumnLengths[columnIndex];
+            if (base[rowIndex].GetFormattingAt(columnIndex) != "")
+            {
+                cell += ":" + base[rowIndex].GetFormattingAt(columnIndex);
+            }
+            cell += "}";
+            cell += CreatePadding(PaddingRight);
+            return  cell;
+        }
+
+        private string AlignCell(int columnIndex)
+        {
+            return ColumnAlignment[columnIndex] == Align.Left ? "-" : "";
         }
 
         private string DrawBorder(BorderType borderType)
