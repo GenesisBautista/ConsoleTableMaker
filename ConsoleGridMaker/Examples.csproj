@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Pastel" Version="4.1.0" />
+    <ProjectReference Include="..\ConsoleTableMaker\ConsoleTableMaker.csproj" />
   </ItemGroup>
 
   <ItemGroup>

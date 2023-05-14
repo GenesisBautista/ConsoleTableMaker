@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageTags>table, grid, console, custom, tables, grids</PackageTags>
+    <RepositoryUrl>https://github.com/GenesisBautista/ConsoleTableMaker</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Authors>Genesis Bautista</Authors>
+    <Title>Console Table Maker</Title>
+    <Description>A table maker with plenty plenty of options speciically for consoles.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Pastel" Version="4.1.0" />
+  </ItemGroup>
+
+</Project>

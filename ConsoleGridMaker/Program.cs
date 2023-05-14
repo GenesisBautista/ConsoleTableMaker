@@ -1,14 +1,24 @@
 ﻿using System.Drawing;
+using ConsoleTableMaker;
+using Pastel;
 
-namespace ConsoleGridMaker
+namespace Examples
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            DataGrid dg = new DataGrid {
+            Example1();
+            Example2();
+
+            Console.WriteLine("test".Pastel(Color.Blue) + " newTest".Pastel(Color.Green));
+        }
+
+        static private void Example1()
+        {
+            Table table = new Table {
                 new Row { "Freemon","Cranmore","fcranmore1@webs.com","560-975-1941","8977 Northland Hill" },
-                new Row { "Dion","Feldman","dfeldman2@yellowbook.com","172-904-6740","652 Everett Avenue" }, 
+                new Row { "Dion","Feldman","dfeldman2@yellowbook.com","172-904-6740","652 Everett Avenue" },
                 new Row { "Giffie", "Attawell", "gattawell3@bravesites.com", "386-317-5262", "96964 Randy Circle" },
                 new Row { "Viv", "Wilman", "vwilman4@skype.com", "118-344-7212", "57 Bunker Hill Pass" },
                 new Row { "Stephanus", "Crumby", "scrumby5@sciencedaily.com", "459-297-4008", "45735 Ronald Regan Road" },
@@ -18,7 +28,7 @@ namespace ConsoleGridMaker
                 new Row { "Rivalee","Dodgshon","rdodgshon9@examiner.com","606-575-3779","230 Golf Circle"}
             };
 
-            dg.AddHeaders( new Row()
+            table.AddHeaders(new Row()
             {
                 "First Name",
                 "Last Name",
@@ -27,12 +37,38 @@ namespace ConsoleGridMaker
                 "Street Address"
             });
 
-            dg.HeaderColor = Color.Red;
-            dg.Align = Align.Right;
-            dg.IntelligibleRows = false;
-            dg[2].ChangeColorAt(0, Color.Green);
+            table.HeaderColor = Color.Aquamarine;
+            table.BorderColor = Color.Salmon;
+            table.DataColor = new Tuple<Color, Color>(Color.Pink, Color.PaleVioletRed);
+            table.PaddingLeft = 1;
+            table.PaddingRight = 1;
+            table.AlignColumnAt(4, Align.Right);
 
-            dg.DrawGrid();
+            table.DrawGrid();
+        }
+
+        static void Example2()
+        {
+            Row row1 = new Row { "Spending", "-$500" };
+            Row row2 = new Row { "Earnings", "$1000" };
+
+            Table table = new Table();
+
+            table.Add(row1);
+            table.Add(row2);
+
+            table.AddHeaders(new Row()
+            {
+                "Budget Item",
+                "Amount"
+            });
+
+            table[1].ChangeColorAt(1, Color.Red);
+            table[2].ChangeColorAt(1, Color.Green);
+
+            table.IntelligibleRows = false;
+
+            table.DrawGrid();
         }
     }
 }
