@@ -75,7 +75,7 @@ namespace ConsoleTableMaker
             ColumnColor[columnIndex] = color;  
         }
 
-        public void DrawGrid()
+        public void DrawTable()
         {
             Console.Write(ToString());
         }
