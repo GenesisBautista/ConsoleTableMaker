@@ -272,12 +272,20 @@ namespace ConsoleTableMaker
             return PaddingRight + PaddingLeft;
         }
 
-        private Color CurrentDataColor(int rowIndex)
+        private Color GetCellColor(int rowIndex, int columnIndex)
         {
+            Color? cellColor = base[rowIndex][columnIndex].Color;
+            Color? columnColor = ColumnColor[columnIndex];
+
             if (rowIndex == 0 && HasHeaders)
                 return HeaderColor;
 
-            if(IntelligibleRows)
+            if (cellColor != null)
+                return (Color)cellColor;
+            else if (columnColor != null)
+                return (Color)columnColor;
+
+            if (IntelligibleRows)
             {
                 if (rowIndex % 2 == 1)
                     return DataColor.Item1;
@@ -285,18 +293,6 @@ namespace ConsoleTableMaker
                     return DataColor.Item2;
             }
             return DataColor.Item1;
-        }
-
-        private Color GetCellColor(int rowIndex, int columnIndex)
-        {
-            Color? cellColor = base[rowIndex][columnIndex].Color;
-            Color? columnColor = ColumnColor[columnIndex];
-
-            if (cellColor != null)
-                return (Color)cellColor;
-            else if (columnColor != null)
-                return (Color)columnColor;
-            return CurrentDataColor(rowIndex);
         }
 
         private string GetFormatString(int rowIndex, int columnIndex)

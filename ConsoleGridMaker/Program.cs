@@ -1,4 +1,7 @@
 ﻿using System.Drawing;
+using System.Net;
+using System.Runtime.ConstrainedExecution;
+using System.Runtime.Intrinsics.X86;
 using ConsoleTableMaker;
 using Pastel;
 
@@ -8,12 +11,15 @@ namespace Examples
     {
         static void Main(string[] args)
         {
-            Example1();
-            Example2();
-            Example3();
+            SimpleExample();
+            FormattingExample();
+            ColorExample();
         }
 
-        static private void Example1()
+        /// <summary>
+        /// You can add headers and it will seperate the headers from the table data
+        /// </summary>
+        static private void SimpleExample()
         {
             Table table = new Table {
                 new Row { "Freemon","Cranmore","fcranmore1@webs.com","560-975-1941","8977 Northland Hill" },
@@ -36,41 +42,13 @@ namespace Examples
                 "Street Address"
             });
 
-            table.HeaderColor = Color.Aquamarine;
-            table.BorderColor = Color.Salmon;
-            table.DataColor = new Tuple<Color, Color>(Color.Pink, Color.PaleVioletRed);
-            table.PaddingLeft = 1;
-            table.PaddingRight = 1;
-            table.AlignColumnAt(4, Align.Right);
-
-            table.DrawGrid();
+            table.DrawTable();
         }
 
-        static void Example2()
-        {
-            Row row1 = new Row { "Spending", "-$500" };
-            Row row2 = new Row { "Earnings", "$1000" };
-
-            Table table = new Table();
-
-            table.Add(row1);
-            table.Add(row2);
-
-            table.AddHeaders(new Row()
-            {
-                "Budget Item",
-                "Amount"
-            });
-
-            table[1][1].Color = Color.Red;
-            table[2][1].Color = Color.Green;
-
-            table.IntelligibleRows = false;
-
-            table.DrawGrid();
-        }
-
-        static void Example3()
+        /// <summary>
+        /// you can add formatting to each column by using SetColumnFormatAt()
+        /// </summary>
+        static void FormattingExample()
         {
             Table table = new Table();
 
@@ -89,8 +67,45 @@ namespace Examples
             table.Add(new Row { "Income", new DateTime(2023, 6, 15), 2555.84 });
 
             table.SetColumnFormatAt(2, "C");
+            table.SetColumnFormatAt(1, "yyyyMMMdd");
 
-            table.DrawGrid();
+            table.DrawTable();
+        }
+
+        /// <summary>
+        /// Text colors can be set by headers, table, column, or individual cell. 
+        /// </summary>
+        static void ColorExample()
+        {
+            Table table = new Table
+            {
+                new Row { "id", "Departing Airport", "Departing Date", "Arriving Airport", "Arriving Date", "Seat Type"},
+                new Row { Guid.NewGuid(), "JUH", new DateTime(2022, 01, 02), "TQN", new DateTime(2023, 10, 28), "First Class" },
+                new Row { Guid.NewGuid(), "MID", new DateTime(2022, 10, 08), "SZH", new DateTime(2023, 08, 14), "Economy" },
+                new Row { Guid.NewGuid(), "TCR", new DateTime(2022, 03, 28), "YZD", new DateTime(2023, 08, 03), "Economy" },
+                new Row { Guid.NewGuid(), "OBL", new DateTime(2022, 06, 10), "HUW", new DateTime(2023, 09, 15), "Economy" },
+                new Row { Guid.NewGuid(), "LAN", new DateTime(2022, 03, 12), "BLU", new DateTime(2023, 09, 15), "Business Class" },
+                new Row { Guid.NewGuid(), "BCO", new DateTime(2022, 10, 26), "HEH", new DateTime(2023, 05, 31), "Business Class" },
+                new Row { Guid.NewGuid(), "BOC", new DateTime(2022, 12, 17), "WHP", new DateTime(2023, 10, 18), "Economy" },
+                new Row { Guid.NewGuid(), "MML", new DateTime(2022, 03, 14), "0", new DateTime(2023, 05, 30), "First Class"   },
+                new Row { Guid.NewGuid(), "SRS", new DateTime(2022, 12, 30), "MIB", new DateTime(2023, 03, 17), "Business Class" },
+                new Row { Guid.NewGuid(), "VIT", new DateTime(2022, 03, 21), "PUK", new DateTime(2023, 08, 19), "Economy" }
+            };
+
+            table.HasHeaders = true;
+
+            table[6][5].Color = Color.SeaGreen;
+            table[9][5].Color = Color.SeaGreen;
+
+            table.HeaderColor = Color.Blue;
+            table.DataColor = new Tuple<Color, Color> (Color.LightBlue, Color.Aqua);
+            table.BorderColor = Color.DodgerBlue;
+            table.SetColumnColorAt(5, Color.White);
+            table[1][5].Color = Color.LightGreen;
+            table[8][5].Color = Color.LightGreen;
+            table[5][5].Color = Color.SeaGreen;
+
+            table.DrawTable();
         }
     }
 }
