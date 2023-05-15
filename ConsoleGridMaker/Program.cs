@@ -62,8 +62,8 @@ namespace Examples
                 "Amount"
             });
 
-            table[1].SetCellColorAt(1, Color.Red);
-            table[2].SetCellColorAt(1, Color.Green);
+            table[1][1].Color = Color.Red;
+            table[2][1].Color = Color.Green;
 
             table.IntelligibleRows = false;
 
@@ -75,8 +75,20 @@ namespace Examples
             Table table = new Table();
 
             table.AddHeaders(new Row { 
-                "Test"
+                "Budget Item",
+                "Date",
+                "Price"
             });
+
+            table.Add(new Row { "Groceries", new DateTime(2023, 6, 4), -154.32 });
+            table.Add(new Row { "Electric bill", new DateTime(2023, 6, 10), -200 });
+            table.Add(new Row { "Water bill", new DateTime(2023, 6, 15), -59.87 });
+            table.Add(new Row { "Cable bill", new DateTime(2023, 6, 5), -99.99 });
+            table.Add(new Row { "Mortgage", new DateTime(2023, 6, 20), -2384.5 });
+            table.Add(new Row { "Income", new DateTime(2023, 6, 1), 2555.84 });
+            table.Add(new Row { "Income", new DateTime(2023, 6, 15), 2555.84 });
+
+            table.SetColumnFormatAt(2, "C");
 
             table.DrawGrid();
         }

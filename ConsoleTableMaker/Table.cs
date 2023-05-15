@@ -23,11 +23,14 @@ namespace ConsoleTableMaker
         public bool IntelligibleRows { get; set; } = true;
         public Color HeaderColor { get; set; } = Color.Green;
         public Tuple<Color, Color> DataColor { get; set; } = new Tuple<Color, Color>(Color.White, Color.Gray);
+        public Align Alignment { get; set; } = Align.Left;
         public bool FullGrid { get; set; } = false;
         #endregion
 
         #region private properties
-        private List<Align> ColumnAlignment = new List<Align>();
+        private List<Align?> ColumnAlignment = new List<Align?>();
+        private List<Color?> ColumnColor = new List<Color?>();
+        private List<string?> ColumnFormatString = new List<string?>();
         private List<int> ColumnLengths = new List<int>();
         private int ColumnCount = 0;
         #endregion
@@ -61,12 +64,15 @@ namespace ConsoleTableMaker
             ColumnAlignment[columnIndex] = alignment;
         }
 
-        public void AlignGrid(Align align)
+        public void SetColumnFormatAt(int columnIndex, string formatString)
         {
-            foreach(int i in ColumnAlignment.Select(index => index))
-            {
-                ColumnAlignment[i] = align;
-            }
+            // TODO: recount the column lengths with formatting
+            ColumnFormatString[columnIndex] = formatString;
+        }
+
+        public void SetColumnColorAt(int columnIndex, Color color)
+        {
+            ColumnColor[columnIndex] = color;  
         }
 
         public void DrawGrid()
@@ -76,17 +82,18 @@ namespace ConsoleTableMaker
 
         public new string ToString()
         {
+            SetColumnLengths();
             string table = "";
             table += DrawBorder(BorderType.Top);
 
             for (int rowIndex = 0; rowIndex < base.Count; rowIndex++)
             {
                 table += "│".Pastel(BorderColor);
-                foreach (var cell in base[rowIndex].Select((data, columnIndex) => (data, columnIndex)))
+                foreach (var tuple in base[rowIndex].Select((cell, columnIndex) => (cell, columnIndex)))
                 {
-                    string output = CellBuilder(rowIndex, cell.columnIndex);
+                    string output = CellBuilder(rowIndex, tuple.columnIndex);
 
-                    table += string.Format(output, cell.data).Pastel(GetCellColor(rowIndex, cell.columnIndex));
+                    table += string.Format(output, tuple.cell.Data).Pastel(GetCellColor(rowIndex, tuple.columnIndex));
                     table += ("│".Pastel(BorderColor));
                 }
                 table += "\n";
@@ -106,8 +113,9 @@ namespace ConsoleTableMaker
         private void NecessaryOnRowAdd(Row row)
         {
             ValidateColumnCount(row);
-            SetColumnAlignment(row);
-            SetColumnLengths(row);
+            SetDefaultColumnAlignment(row);
+            SetDefaultColumnColor(row);
+            SetDefaultColumnFormatString(row);
         }
         private void ValidateColumnCount(Row row)
         {
@@ -120,30 +128,60 @@ namespace ConsoleTableMaker
                 throw new Exception($"New row added at Index {Count - 1} does not match the rest of the grid column size");
             }
         }
-        private void SetColumnLengths(Row row)
+        private void SetColumnLengths()
         {
-            foreach (var s in row.Select((data, columnIndex) => (data, columnIndex)))
+            for(int i = 0; i < base.Count; i++)
             {
-                if (ColumnLengths.ElementAtOrDefault(s.columnIndex) == 0)
+                foreach (var tuple in base[i].Select((cell, columnIndex) => (cell, columnIndex)))
                 {
-                    ColumnLengths.Add(s.data.ToString().Length);
-                }
-                else if (s.data.ToString().Length > ColumnLengths[s.columnIndex])
-                {
-                    ColumnLengths[s.columnIndex] = s.data.ToString().Length;
+                    string formattedString;
+                    if (ColumnFormatString[tuple.columnIndex] != null)
+                        formattedString = String.Format("{0:" + ColumnFormatString[tuple.columnIndex] + "}", tuple.cell.Data);
+                    else
+                        formattedString = tuple.cell.Data.ToString() ?? "";
+
+                    if (ColumnLengths.ElementAtOrDefault(tuple.columnIndex) == 0)
+                    {
+                        ColumnLengths.Add(formattedString.Length);
+                    }
+                    else if (formattedString.Length > ColumnLengths[tuple.columnIndex])
+                    {
+                        ColumnLengths[tuple.columnIndex] = formattedString.Length;
+                    }
                 }
             }
         }
 
-        private void SetColumnAlignment(Row row)
+        private void SetDefaultColumnAlignment(Row row)
         {
             if (ColumnAlignment.Count == 0)
             {
-                foreach (string s in row)
+                foreach (object obj in row)
                 {
-                    ColumnAlignment.Add(Align.Left);
+                    ColumnAlignment.Add(null);
                 }
+            }
+        }
 
+        private void SetDefaultColumnColor(Row row)
+        {
+            if (ColumnColor.Count == 0)
+            {
+                foreach (object obj in row)
+                {
+                    ColumnColor.Add(null);
+                }
+            }
+        }
+
+        private void SetDefaultColumnFormatString(Row row)
+        {
+            if (ColumnFormatString.Count == 0)
+            {
+                foreach (object obj in row)
+                {
+                    ColumnFormatString.Add(null);
+                }
             }
         }
         #endregion
@@ -153,19 +191,23 @@ namespace ConsoleTableMaker
         {
             string cell = "";
             cell += CreatePadding(PaddingLeft);
-            cell += "{0," + AlignCell(columnIndex) + ColumnLengths[columnIndex];
-            if (base[rowIndex].GetFormattingAt(columnIndex) != "")
-            {
-                cell += ":" + base[rowIndex].GetFormattingAt(columnIndex);
-            }
+            cell += "{0," + AlignCell(rowIndex, columnIndex) + ColumnLengths[columnIndex];
+            cell += GetFormatString(rowIndex, columnIndex);
             cell += "}";
             cell += CreatePadding(PaddingRight);
             return  cell;
         }
 
-        private string AlignCell(int columnIndex)
+        private string AlignCell(int rowIndex, int columnIndex)
         {
-            return ColumnAlignment[columnIndex] == Align.Left ? "-" : "";
+            Align? cellAlignment = base[rowIndex][columnIndex].Alignment;
+            Align? columnAlignment = ColumnAlignment[columnIndex];
+
+            if (cellAlignment != null)
+                return cellAlignment == Align.Left ? "-" : "";
+            else if (columnAlignment != null)
+                return columnAlignment == Align.Left ? "-" : "";
+            return Alignment == Align.Left ? "-" : "";
         }
 
         private string DrawBorder(BorderType borderType)
@@ -247,11 +289,23 @@ namespace ConsoleTableMaker
 
         private Color GetCellColor(int rowIndex, int columnIndex)
         {
-            Color? cellColor = base[rowIndex].GetCellColor(columnIndex);
-            if (cellColor == null)
-                return CurrentDataColor(rowIndex);
-            else
+            Color? cellColor = base[rowIndex][columnIndex].Color;
+            Color? columnColor = ColumnColor[columnIndex];
+
+            if (cellColor != null)
                 return (Color)cellColor;
+            else if (columnColor != null)
+                return (Color)columnColor;
+            return CurrentDataColor(rowIndex);
+        }
+
+        private string GetFormatString(int rowIndex, int columnIndex)
+        {
+            string? columnFormatString = ColumnFormatString[columnIndex];
+
+            if (columnFormatString != null)
+                return ":" + columnFormatString;
+            return "";
         }
         #endregion
         #endregion

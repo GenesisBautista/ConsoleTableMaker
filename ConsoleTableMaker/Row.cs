@@ -7,14 +7,12 @@ using System.Threading.Tasks;
 
 namespace ConsoleTableMaker
 {
-    public class Row : List<object>
+    public class Row : List<Cell>
     {
         public int ParentColumnCount { get; set; } = 0;
         public bool IsAttached { get; set; } = false;
 
-        private List<CellProperties> cellProperties = new List<CellProperties>();
-
-        public void Add(object obj, Color? color = null, Align cellAlignment = Align.Left, string cellFormatString = "")
+        public void Add(object obj)
         {
             if (IsAttached && (base.Count + 1) > ParentColumnCount)
             {
@@ -22,24 +20,8 @@ namespace ConsoleTableMaker
             }
             else
             {
-                cellProperties.Add(new CellProperties(color, cellAlignment, cellFormatString));
-                base.Add(obj);
+                base.Add(new Cell(obj));
             }
-        }
-
-        public Color? GetCellColor(int index)
-        {
-            return cellProperties[index].Color;
-        }
-
-        public void SetCellColorAt(int index, Color color)
-        {
-            cellProperties[index].Color = color;
-        }
-
-        public string GetFormattingAt(int index)
-        {
-            return cellProperties[index].FormatString;
         }
     }
 }
