@@ -34,7 +34,7 @@ static void Main(string[] args)
     table.DrawTable();
 }
 ```
->put sample02 here
+![image](https://github.com/GenesisBautista/ConsoleTableMaker/blob/master/screenshots/sample02.PNG)
 
 ## Headers
 You can add headers using AddHeaders(row) method this takes in a Row.
@@ -46,8 +46,7 @@ you can also add headers to the top of your table and set the HasHeaders flag to
 table.Insert(0, (new Row { "Column One", "Column Two" }));
 table.HasHeaders = true;
 ```
->put sample03 here
->
+![image](https://github.com/GenesisBautista/ConsoleTableMaker/blob/master/screenshots/sample03.PNG)
 ## Table Formatting
 ### Padding
 Padding can be added to create space to the left or right of cells this can be done using the PaddingLeft and PaddingRight properties.
@@ -55,14 +54,13 @@ Padding can be added to create space to the left or right of cells this can be d
 table.PaddingLeft = 1;
 table.PaddingRight = 5;
 ```
->sample04
+![image](https://github.com/GenesisBautista/ConsoleTableMaker/blob/master/screenshots/sample04.PNG)
 ### Full Grid
 The FullGrid property can be set to true to draw a grid in between each cell.
 ```cs
 table.FullGrid = true;
 ```
->sample05
-
+![image](https://github.com/GenesisBautista/ConsoleTableMaker/blob/master/screenshots/sample05.PNG)
 ### Text Formatting
 You can format texts by column using SetColumnFormatAt(index, formatString)
 ```cs
@@ -78,8 +76,7 @@ static void Main(string[] args)
     table.DrawTable();
 }
 ```
->sample06
-
+![image](https://github.com/GenesisBautista/ConsoleTableMaker/blob/master/screenshots/sample06.PNG)
 There is currently no way to format by each cell or by the whole table. 
 ### Alignment
 #### Table Alignment
@@ -115,47 +112,43 @@ static void Main(string[] args)
     table.DrawTable();
 }
 ```
->sample07
-
+![image](https://github.com/GenesisBautista/ConsoleTableMaker/blob/master/screenshots/sample07.PNG)
 ### Color
 #### Border Color
 Border color can be set using BorderColor property on the table.
 ```cs
 table.BorderColor = Color.Red;
 ```
-> sample 08
-
+![image](https://github.com/GenesisBautista/ConsoleTableMaker/blob/master/screenshots/sample08.PNG)
 #### Header Color
 Header color can be set using HeaderColor property on the table.
 ```cs
 table.HeaderColor = Color.Blue;
 ```
-> sample09
-
+![image](https://github.com/GenesisBautista/ConsoleTableMaker/blob/master/screenshots/sample09.PNG)
 #### Alternating Color
 You can turn alternating color off by setting the AlternatingColor property to false.
 ```cs
 table.AlternatingColor = false;
 ```
-> sample10
-
+![image](https://github.com/GenesisBautista/ConsoleTableMaker/blob/master/screenshots/sample10.PNG)
 You can set the colors that alternate by the table property DataColor which is a tuple of two colors, if alternating colors is turned off the first of these colors will be chosen for the whole table.
 ```cs
 table.DataColor = new Tuple<Color, Color>(Color.LightGreen, Color.GreenYellow);
 ```
-> sample11
+![image](https://github.com/GenesisBautista/ConsoleTableMaker/blob/master/screenshots/sample11.PNG)
 #### Column Color
 Column color can be changed using SetColumnColorAt(columnIndex, color) method.
 ```cs
 table.SetColumnColorAt(1, Color.Purple);
 ```
-> sample12
+![image](https://github.com/GenesisBautista/ConsoleTableMaker/blob/master/screenshots/sample12.PNG)
 #### Cell Color
 Cell color can be change by setting the color property of a cell.
 ```cs
 table[rowIndex][columnIndex].Color = Color.Yellow;
 ```
->sample13
+![image](https://github.com/GenesisBautista/ConsoleTableMaker/blob/master/screenshots/sample13.PNG)
 #### Additional Color Notes
 You can use RGB values for color by using Color.Argb(int, int, int).
 ```cs
