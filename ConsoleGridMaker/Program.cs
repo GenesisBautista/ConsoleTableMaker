@@ -74,6 +74,8 @@ namespace Examples
 
         /// <summary>
         /// Text colors can be set by headers, table, column, or individual cell. 
+        /// headers will always be colored by HeaderColor property you cannot change header color by cell color or by column color
+        /// for data cells the hierarchy goes cell -> column -> table and it doesnt matter what order you set them in it will always be showing cell first.
         /// </summary>
         static void ColorExample()
         {
@@ -96,6 +98,7 @@ namespace Examples
 
             table[6][5].Color = Color.SeaGreen;
             table[9][5].Color = Color.SeaGreen;
+            table[5][5].Color = Color.SeaGreen;
 
             table.HeaderColor = Color.Blue;
             table.DataColor = new Tuple<Color, Color> (Color.LightBlue, Color.Aqua);
@@ -103,7 +106,6 @@ namespace Examples
             table.SetColumnColorAt(5, Color.White);
             table[1][5].Color = Color.LightGreen;
             table[8][5].Color = Color.LightGreen;
-            table[5][5].Color = Color.SeaGreen;
 
             table.DrawTable();
         }
