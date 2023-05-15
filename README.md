@@ -16,7 +16,7 @@ static void Main(string[] args)
     table.DrawTable();
 }
 ```
-> put sample01 here
+![image](https://github.com/GenesisBautista/ConsoleTableMaker/blob/master/screenshots/sample01.PNG)
 
 To access each cell you can put its coordinates from the table and change the "data" property. We can add this line to the code above and get the following result:
 ```cs
