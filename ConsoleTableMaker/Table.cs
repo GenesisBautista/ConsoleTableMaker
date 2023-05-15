@@ -20,7 +20,7 @@ namespace ConsoleTableMaker
         public int PaddingLeft { get; set; } = 0;
         public int PaddingRight { get; set; } = 0;
         public Color BorderColor { get; set; } = Color.White;
-        public bool IntelligibleRows { get; set; } = true;
+        public bool AlternatingColor { get; set; } = true;
         public Color HeaderColor { get; set; } = Color.Green;
         public Tuple<Color, Color> DataColor { get; set; } = new Tuple<Color, Color>(Color.White, Color.Gray);
         public Align Alignment { get; set; } = Align.Left;
@@ -59,15 +59,14 @@ namespace ConsoleTableMaker
             }
         }
 
-        public void AlignColumnAt(int columnIndex, Align alignment)
-        {
-            ColumnAlignment[columnIndex] = alignment;
-        }
-
         public void SetColumnFormatAt(int columnIndex, string formatString)
         {
-            // TODO: recount the column lengths with formatting
             ColumnFormatString[columnIndex] = formatString;
+        }
+
+        public void SetColumnAlignmentAt(int columnIndex, Align alignment)
+        {
+            ColumnAlignment[columnIndex] = alignment;
         }
 
         public void SetColumnColorAt(int columnIndex, Color color)
@@ -285,7 +284,7 @@ namespace ConsoleTableMaker
             else if (columnColor != null)
                 return (Color)columnColor;
 
-            if (IntelligibleRows)
+            if (AlternatingColor)
             {
                 if (rowIndex % 2 == 1)
                     return DataColor.Item1;

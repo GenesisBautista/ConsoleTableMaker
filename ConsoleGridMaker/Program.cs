@@ -11,11 +11,31 @@ namespace Examples
     {
         static void Main(string[] args)
         {
-            SimpleExample();
+            int columnIndex = 1;
+            int rowIndex = 3;
+            Table table = new Table();
+            table.Add(new Row { "1st Cell", "Cell" });
+            table.Add(new Row { "2nd Cell", "Also a Cell" });
+            table.Add(new Row { "3rd Cell", "Fake Data" });
+            table.AddHeaders(new Row { "Header", "2nd Header" });
+
+            table.BorderColor = Color.Red;
+            table.FullGrid = true;
+            table.HeaderColor = Color.Blue;
+            table.DataColor = new Tuple<Color, Color>(Color.LightGreen, Color.GreenYellow);
+            table.SetColumnColorAt(1, Color.Purple);
+            table[rowIndex][columnIndex].Color = Color.Yellow;
+
+            table.DrawTable();
+        }
+
+        static void test()
+        {
+            /*SimpleExample();
             FormattingExample();
             ColorExample();
             AlignmentExamples();
-            ExtraExamples();
+            ExtraExamples();*/
         }
 
         /// <summary>
@@ -141,7 +161,7 @@ namespace Examples
             );
 
             table.Alignment = Align.Right;
-            table.AlignColumnAt(1, Align.Left);
+            table.SetColumnAlignmentAt(1, Align.Left);
             table[2][1].Alignment = Align.Right;
             table[3][1].Alignment = Align.Right;
             table[7][1].Alignment = Align.Right;
@@ -182,7 +202,7 @@ namespace Examples
             table.PaddingLeft = 1;
             table.PaddingRight = 1;
             table.FullGrid = true;
-            table.IntelligibleRows = false;
+            table.AlternatingColor = false;
             table.SetColumnColorAt(2, Color.Gray);
 
             Console.WriteLine(table.ToString());
