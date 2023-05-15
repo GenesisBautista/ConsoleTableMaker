@@ -77,6 +77,7 @@ static void Main(string[] args)
 }
 ```
 ![image](https://github.com/GenesisBautista/ConsoleTableMaker/blob/master/screenshots/sample06.PNG)
+
 There is currently no way to format by each cell or by the whole table. 
 ### Alignment
 #### Table Alignment
